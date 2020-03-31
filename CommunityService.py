@@ -112,6 +112,7 @@ def view_student_by_id(student_id_entry):
     #                       "grade": grade_entry.get()
     #                   }
     #                   )
+    #
 
     db_connection.commit()
     db_connection.close()
