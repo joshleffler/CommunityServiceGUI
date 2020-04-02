@@ -2,9 +2,6 @@ from tkinter import *
 from tkinter import messagebox
 import sqlite3
 
-global add_student_window
-global search_student_window
-
 
 def query_database(query):
     db_connection = sqlite3.connect('csdatabase.db')
@@ -19,34 +16,32 @@ def query_database(query):
     return result
 
 
-def commit_student(student_id_entry, first_name_entry, last_name_entry, grade_entry):
-    # TODO verify user responses (not blank, integers are integers, student ID is unique)
-
-    # Connect to database
-    db_connection = sqlite3.connect('csdatabase.db')
-    db_cursor = db_connection.cursor()
-
-    # Add new student to database
-    db_cursor.execute("INSERT INTO students (student_id, first_name, last_name, grade) VALUES (:student_id, "
-                      ":first_name, :last_name, :grade);",
-                      {
-                          "student_id": student_id_entry.get(),
-                          "first_name": first_name_entry.get(),
-                          "last_name": last_name_entry.get(),
-                          "grade": grade_entry.get()
-                      }
-                      )
-
-    db_connection.commit()
-    db_connection.close()
-
-    # Close add student window
-    add_student_window.destroy()
-
-
 def add_student():
+    def commit_student():
+        # TODO verify user responses (not blank, integers are integers, student ID is unique)
+
+        # Connect to database
+        db_connection = sqlite3.connect('csdatabase.db')
+        db_cursor = db_connection.cursor()
+
+        # Add new student to database
+        db_cursor.execute("INSERT INTO students (student_id, first_name, last_name, grade) VALUES (:student_id, "
+                          ":first_name, :last_name, :grade);",
+                          {
+                              "student_id": student_id_entry.get(),
+                              "first_name": first_name_entry.get(),
+                              "last_name": last_name_entry.get(),
+                              "grade": grade_entry.get()
+                          }
+                          )
+
+        db_connection.commit()
+        db_connection.close()
+
+        # Close add student window
+        add_student_window.destroy()
+
     # <editor-fold desc="Create a new window">
-    global add_student_window
     add_student_window = Toplevel()
     add_student_window.title("Add a Student")
     # </editor-fold>
@@ -68,8 +63,7 @@ def add_student():
     add_student_exit_button = Button(add_student_window, text="Cancel", command=add_student_window.destroy, width=15,
                                      pady=10)
     add_student_submit_button = Button(add_student_window, text="Add",
-                                       command=lambda: commit_student(student_id_entry, first_name_entry,
-                                                                      last_name_entry, grade_entry), width=20, pady=10)
+                                       command=commit_student, width=20, pady=10)
     # </editor-fold>
 
     # <editor-fold desc="Place the add student window's elements">
@@ -86,7 +80,7 @@ def add_student():
     grade_entry.grid(row=4, column=1, padx=(0, 10))
 
     add_student_exit_button.grid(row=5, column=0, pady=10, padx=10)
-    add_student_submit_button.grid(row=5, column=1, pady=10, padx=(0,10))
+    add_student_submit_button.grid(row=5, column=1, pady=10, padx=(0, 10))
     # </editor-fold>
 
 
@@ -94,40 +88,121 @@ def add_hours():
     return
 
 
-def view_student_by_id(student_id_entry):
-    # TODO check that ID was entered, is integer, check that ID exists
+def display_student(info):
+    # <editor-fold desc="Create window, title, and subtitle">
+    name = info[1] + " " + info[2]
+    grade = "Grade " + str(info[3])
+    id_num = "ID " + str(info[0])
+
+    display_student_window = Toplevel()
+    display_student_window.title(name)
+
+    title = Label(display_student_window, text=name)
+    title.config(font=("Arial", 18))
+    title.grid(row=0, column=0, columnspan=3, pady=(10, 0))
+
+    subtitle = Label(display_student_window, text=(grade + " | " + id_num))
+    subtitle.config(font=("Arial", 14))
+    subtitle.grid(row=1, column=0, columnspan=3, pady=10, padx=10)
+    # </editor-fold>
 
     # Connect to database
     db_connection = sqlite3.connect('csdatabase.db')
     db_cursor = db_connection.cursor()
 
     # Add new student to database
-    # TODO
-    # db_cursor.execute("INSERT INTO students (student_id, first_name, last_name, grade) VALUES (:student_id, "
-    #                   ":first_name, :last_name, :grade);",
-    #                   {
-    #                       "student_id": student_id_entry.get(),
-    #                       "first_name": first_name_entry.get(),
-    #                       "last_name": last_name_entry.get(),
-    #                       "grade": grade_entry.get()
-    #                   }
-    #                   )
-    #
+    db_cursor.execute("SELECT * FROM service WHERE student_id == :student_id;",
+                      {
+                          "student_id": str(info[0]),
+                      }
+                      )
+
+    result = db_cursor.fetchall()
+    print(result)
 
     db_connection.commit()
     db_connection.close()
 
-    # Close search student window
-    search_student_window.destroy()
 
+def select_student(results):
+    def return_student(info):
+        select_student_window.destroy()
+        display_student(info)
 
-def view_student_by_lname():
-    return
+    if len(results) == 0:
+        messagebox.showinfo(title="No Results", message="No students matching that query were found.")
+        return
+    elif len(results) == 1:
+        display_student(results[0])
+    else:
+        select_student_window = Toplevel()
+        select_student_window.title("Select Student")
+
+        title = Label(select_student_window, text="Multiple Results")
+        title.config(font=("Arial", 18))
+        title.grid(row=0, column=0, columnspan=4, pady=(10, 0))
+
+        for i, student in enumerate(results):
+            name = student[1] + " " + student[2]
+            grade = "Grade " + str(student[3])
+            id_num = "ID " + str(student[0])
+
+            select_button = Button(select_student_window, text="Select", command=lambda student_temp=student: return_student(student_temp),
+                                   padx=8, pady=8)
+            student_name = Label(select_student_window, text=name)
+            student_grade = Label(select_student_window, text=grade)
+            student_id = Label(select_student_window, text=id_num)
+
+            select_button.grid(row=i + 1, column=0, padx=5, pady=5)
+            student_name.grid(row=i + 1, column=1)
+            student_grade.grid(row=i + 1, column=2)
+            student_id.grid(row=i + 1, column=3, padx=(0, 5))
 
 
 def view_student():
+    def search_by_id():
+        # Connect to database
+        db_connection = sqlite3.connect('csdatabase.db')
+        db_cursor = db_connection.cursor()
+
+        # Add new student to database
+        db_cursor.execute("SELECT * FROM students WHERE student_id == :student_id;",
+                          {
+                              "student_id": str(student_id_entry.get()),
+                          }
+                          )
+
+        result = db_cursor.fetchall()
+        select_student(result)
+
+        db_connection.commit()
+        db_connection.close()
+
+        # Close search student window
+        search_student_window.destroy()
+
+    def search_by_lname():
+        # Connect to database
+        db_connection = sqlite3.connect('csdatabase.db')
+        db_cursor = db_connection.cursor()
+
+        # Add new student to database
+        db_cursor.execute("SELECT * FROM students WHERE UPPER(last_name) == UPPER(:last_name);",
+                          {
+                              "last_name": last_name_entry.get(),
+                          }
+                          )
+
+        result = db_cursor.fetchall()
+        select_student(result)
+
+        db_connection.commit()
+        db_connection.close()
+
+        # Close search student window
+        search_student_window.destroy()
+
     # <editor-fold desc="Create view student info window">
-    global search_student_window
     search_student_window = Toplevel()
     search_student_window.title("View Student Info")
     # </editor-fold>
@@ -143,9 +218,9 @@ def view_student():
     last_name_entry = Entry(search_student_window, width=20)
 
     student_id_button = Button(search_student_window, text="Search by student ID",
-                               command=lambda: view_student_by_id(student_id_entry), width=20, pady=10)
-    last_name_button = Button(search_student_window, text="Search by last name", command=view_student_by_lname(),
-                              width=20, pady=10, state=DISABLED)
+                               command=search_by_id, width=20, pady=10)
+    last_name_button = Button(search_student_window, text="Search by last name", command=search_by_lname,
+                              width=20, pady=10)
     search_window_exit_button = Button(search_student_window, text="Cancel", command=search_student_window.destroy,
                                        width=15, pady=10)
     # </editor-fold>
