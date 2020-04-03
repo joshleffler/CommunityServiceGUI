@@ -90,20 +90,26 @@ def add_hours():
 
 def display_student(info):
     # <editor-fold desc="Create window, title, and subtitle">
+
+    # Process/format student info
     name = info[1] + " " + info[2]
     grade = "Grade " + str(info[3])
     id_num = "ID " + str(info[0])
 
+    # Create window to display student info
     display_student_window = Toplevel()
     display_student_window.title(name)
 
+    # Display student's name as a title at the top of the window
     title = Label(display_student_window, text=name)
     title.config(font=("Arial", 18))
     title.grid(row=0, column=0, columnspan=3, pady=(10, 0))
 
+    # Display student's grade level and ID number as a subtitle at the top of the window
     subtitle = Label(display_student_window, text=(grade + " | " + id_num))
     subtitle.config(font=("Arial", 14))
     subtitle.grid(row=1, column=0, columnspan=3, pady=10, padx=10)
+
     # </editor-fold>
 
     # Connect to database
@@ -147,7 +153,8 @@ def select_student(results):
             grade = "Grade " + str(student[3])
             id_num = "ID " + str(student[0])
 
-            select_button = Button(select_student_window, text="Select", command=lambda student_temp=student: return_student(student_temp),
+            select_button = Button(select_student_window, text="Select",
+                                   command=lambda student_temp=student: return_student(student_temp),
                                    padx=8, pady=8)
             student_name = Label(select_student_window, text=name)
             student_grade = Label(select_student_window, text=grade)
