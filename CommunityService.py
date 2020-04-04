@@ -193,16 +193,18 @@ def view_student():
         db_connection = sqlite3.connect('csdatabase.db')
         db_cursor = db_connection.cursor()
 
-        # Add new student to database
+        # Search database for any students with the specified last name
         db_cursor.execute("SELECT * FROM students WHERE UPPER(last_name) == UPPER(:last_name);",
                           {
                               "last_name": last_name_entry.get(),
                           }
                           )
 
+        # Access and return any search results
         result = db_cursor.fetchall()
         select_student(result)
 
+        # Close database connection
         db_connection.commit()
         db_connection.close()
 
