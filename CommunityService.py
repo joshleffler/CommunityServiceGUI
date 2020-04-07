@@ -62,8 +62,7 @@ def add_student():
 
     add_student_exit_button = Button(add_student_window, text="Cancel", command=add_student_window.destroy, width=15,
                                      pady=10)
-    add_student_submit_button = Button(add_student_window, text="Add",
-                                       command=commit_student, width=20, pady=10)
+    add_student_submit_button = Button(add_student_window, text="Add", command=commit_student, width=20, pady=10)
     # </editor-fold>
 
     # <editor-fold desc="Place the add student window's elements">
@@ -116,7 +115,7 @@ def display_student(info):
     db_connection = sqlite3.connect('csdatabase.db')
     db_cursor = db_connection.cursor()
 
-    # Add new student to database
+    # Find all service records for student
     db_cursor.execute("SELECT * FROM service WHERE student_id == :student_id;",
                       {
                           "student_id": str(info[0]),
