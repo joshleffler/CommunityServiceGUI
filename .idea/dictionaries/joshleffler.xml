@@ -2,6 +2,8 @@
   <dictionary name="joshleffler">
     <words>
       <w>csdatabase</w>
+      <w>fname</w>
+      <w>lname</w>
     </words>
   </dictionary>
 </component>
