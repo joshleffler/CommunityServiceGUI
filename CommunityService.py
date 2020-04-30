@@ -10,9 +10,9 @@ import sqlite3
 import datetime
 
 
-def is_valid_int(input):
+def is_valid_int(input_to_test):
     try:
-        int(input)
+        int(input_to_test)
         return True
     except ValueError:
         return False
@@ -42,8 +42,8 @@ def add_student():
                 db_cursor = db_connection.cursor()
 
                 # Add new student to database
-                db_cursor.execute("INSERT INTO students (student_id, first_name, last_name, grade) VALUES (:student_id, "
-                                  ":first_name, :last_name, :grade);",
+                db_cursor.execute("INSERT INTO students (student_id, first_name, last_name, grade) VALUES ("
+                                  ":student_id, :first_name, :last_name, :grade);",
                                   {
                                       "student_id": student_id_entry.get(),
                                       "first_name": first_name_entry.get(),
@@ -73,8 +73,8 @@ def add_student():
     # </editor-fold>
 
     # <editor-fold desc="Create the add student window's elements">
-    title = Label(add_student_window, text="Add a Student")
-    title.config(font=("Arial", 18))
+    add_student_title = Label(add_student_window, text="Add a Student")
+    add_student_title.config(font=("Arial", 18))
 
     student_id_label = Label(add_student_window, text="Student ID")
     first_name_label = Label(add_student_window, text="First Name")
@@ -92,7 +92,7 @@ def add_student():
     # </editor-fold>
 
     # <editor-fold desc="Place the add student window's elements">
-    title.grid(row=0, column=0, columnspan=2, pady=(10, 0))
+    add_student_title.grid(row=0, column=0, columnspan=2, pady=(10, 0))
 
     student_id_label.grid(row=1, column=0)
     first_name_label.grid(row=2, column=0)
@@ -132,6 +132,7 @@ def add_hours():
             month_num = month_numbers[selected_month.get()]
 
             # Check that user input is valid
+            # noinspection PyPep8
             valid_date = is_valid_int(day_entry.get()) and is_valid_int(year_entry.get()) and is_valid_date(int(month_num), int(day_entry.get()), int(year_entry.get()))
             valid_organization = organization_entry.get() != ""
             valid_hours = is_valid_int(hours_entry.get()) and int(hours_entry.get()) > 0
@@ -182,8 +183,8 @@ def add_hours():
         # </editor-fold>
 
         # <editor-fold desc="Create the add hours window's elements">
-        title = Label(add_hours_window, text=("Add Hours for " + name))
-        title.config(font=("Arial", 18))
+        add_hours_title = Label(add_hours_window, text=("Add Hours for " + name))
+        add_hours_title.config(font=("Arial", 18))
 
         month_label = Label(add_hours_window, text="Month")
         day_label = Label(add_hours_window, text="Day")
@@ -209,7 +210,7 @@ def add_hours():
         # </editor-fold>
 
         # <editor-fold desc="Place the add hours window's elements">
-        title.grid(row=0, column=0, columnspan=2, pady=(10, 0))
+        add_hours_title.grid(row=0, column=0, columnspan=2, pady=(10, 0))
 
         month_label.grid(row=1, column=0)
         day_label.grid(row=2, column=0)
@@ -247,9 +248,9 @@ def add_hours():
             select_student_window = Toplevel()
             select_student_window.title("Select Student")
 
-            title = Label(select_student_window, text="Multiple Results")
-            title.config(font=("Arial", 18))
-            title.grid(row=0, column=0, columnspan=4, pady=(10, 0))
+            select_student_title = Label(select_student_window, text="Multiple Results")
+            select_student_title.config(font=("Arial", 18))
+            select_student_title.grid(row=0, column=0, columnspan=4, pady=(10, 0))
 
             # For each result, create a row and a button that the user can use to select that result
             for i, student in enumerate(results):
@@ -323,8 +324,8 @@ def add_hours():
     # </editor-fold>
 
     # <editor-fold desc="Create elements for add hours window">
-    title = Label(search_student_window, text="Select a Student")
-    title.config(font=("Arial", 18))
+    add_hours_select_student_title = Label(search_student_window, text="Select a Student")
+    add_hours_select_student_title.config(font=("Arial", 18))
 
     student_id_label = Label(search_student_window, text="Student ID")
     last_name_label = Label(search_student_window, text="Last Name")
@@ -341,7 +342,7 @@ def add_hours():
     # </editor-fold>
 
     # <editor-fold desc="Place elements for add hours window">
-    title.grid(row=0, column=0, columnspan=2, pady=(10, 0))
+    add_hours_select_student_title.grid(row=0, column=0, columnspan=2, pady=(10, 0))
 
     student_id_label.grid(row=1, column=0, padx=(10, 0))
     student_id_entry.grid(row=1, column=1, padx=(0, 10))
@@ -370,9 +371,9 @@ def view_student():
         display_student_window.title("View Student Info")
 
         # Display student's name as a title at the top of the window
-        title = Label(display_student_window, text=name)
-        title.config(font=("Arial", 18))
-        title.grid(row=0, column=0, columnspan=4, pady=(10, 0))
+        student_title = Label(display_student_window, text=name)
+        student_title.config(font=("Arial", 18))
+        student_title.grid(row=0, column=0, columnspan=4, pady=(10, 0))
 
         # Display student's grade level and ID number as a subtitle at the top of the window
         subtitle = Label(display_student_window, text=(grade + " | " + id_num))
@@ -448,9 +449,9 @@ def view_student():
             select_student_window = Toplevel()
             select_student_window.title("Select Student")
 
-            title = Label(select_student_window, text="Multiple Results")
-            title.config(font=("Arial", 18))
-            title.grid(row=0, column=0, columnspan=4, pady=(10, 0))
+            select_title = Label(select_student_window, text="Multiple Results")
+            select_title.config(font=("Arial", 18))
+            select_title.grid(row=0, column=0, columnspan=4, pady=(10, 0))
 
             # For each result, create a row and a button that the user can use to select that result
             for i, student in enumerate(results):
@@ -524,8 +525,8 @@ def view_student():
     # </editor-fold>
 
     # <editor-fold desc="Create elements for view student info window">
-    title = Label(search_student_window, text="View Student Info")
-    title.config(font=("Arial", 18))
+    view_student_select_title = Label(search_student_window, text="View Student Info")
+    view_student_select_title.config(font=("Arial", 18))
 
     student_id_label = Label(search_student_window, text="Student ID")
     last_name_label = Label(search_student_window, text="Last Name")
@@ -542,7 +543,7 @@ def view_student():
     # </editor-fold>
 
     # <editor-fold desc="Place elements for student info window">
-    title.grid(row=0, column=0, columnspan=2, pady=(10, 0))
+    view_student_select_title.grid(row=0, column=0, columnspan=2, pady=(10, 0))
 
     student_id_label.grid(row=1, column=0, padx=(10, 0))
     student_id_entry.grid(row=1, column=1, padx=(0, 10))
@@ -599,24 +600,24 @@ def generate_report():
 
     # <editor-fold desc="Create and save report file">
     # Ask user where to save the report
-    file = filedialog.asksaveasfile(filetypes=[("Text file", "*.txt")], mode='w')
+    report_file = filedialog.asksaveasfile(filetypes=[("Text file", "*.txt")], mode='w')
 
     # Print which students have and have not met the requirement
-    if file:
-        file.write("MET REQUIREMENT:")
-        file.write("\n")
+    if report_file:
+        report_file.write("MET REQUIREMENT:")
+        report_file.write("\n")
 
         for student in passing_students:
-            file.write(student)
-            file.write("\n")
+            report_file.write(student)
+            report_file.write("\n")
 
-        file.write("\n")
-        file.write("NOT MET REQUIREMENT:")
-        file.write("\n")
+        report_file.write("\n")
+        report_file.write("NOT MET REQUIREMENT:")
+        report_file.write("\n")
 
         for student in failing_students:
-            file.write(student)
-            file.write("\n")
+            report_file.write(student)
+            report_file.write("\n")
     # </editor-fold>
 
 

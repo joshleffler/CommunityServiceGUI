@@ -4,6 +4,9 @@
       <w>csdatabase</w>
       <w>fname</w>
       <w>lname</w>
+      <w>padx</w>
+      <w>pady</w>
+      <w>strftime</w>
     </words>
   </dictionary>
 </component>

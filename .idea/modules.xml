@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../CommunityService/.idea/CommunityService.iml" filepath="$PROJECT_DIR$/../CommunityService/.idea/CommunityService.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/CommunityServiceGUI.iml" filepath="$PROJECT_DIR$/.idea/CommunityServiceGUI.iml" />
     </modules>
   </component>
